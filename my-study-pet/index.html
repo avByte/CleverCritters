@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleverCritters - Study Pet</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <!-- Home Screen -->
+    <div id="home-screen" class="screen active">
+        <div class="container">
+            <h1 class="title">CLEVERCRITTERS</h1>
+            <p class="subtitle">Your Study Companion</p>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="loadPet()">Load Critter</button>
+                <button class="btn btn-secondary" onclick="showNewPet()">New Critter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Pet Screen -->
+    <div id="new-pet-screen" class="screen">
+        <div class="container">
+            <button class="btn btn-minimal back-btn" onclick="showHome()">← Back</button>
+            
+            <h1 class="title">CLEVERCRITTERS</h1>
+            <p class="subtitle">Create New Critter</p>
+            
+            <div class="pet-creation-card">
+                <h2>Choose Your Critter</h2>
+                <div class="egg-display">🥚</div>
+                <p class="egg-description">Hatch and evolve your critter by studying with it!</p>
+                <input type="text" id="pet-name" placeholder="Give your critter a name" class="input-field">
+                <button class="btn btn-primary" onclick="createPet()">Adopt Your Critter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pet Lounge Screen -->
+    <div id="pet-lounge-screen" class="screen">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <h1 class="title">CLEVERCRITTERS</h1>
+                <div class="header-controls">
+                    <span class="subtitle">Critter Lounge</span>
+                    <button class="btn btn-minimal" onclick="goHome()">Home</button>
+                </div>
+            </div>
+
+            <!-- Pet Display -->
+            <div class="pet-section">
+                <div class="pet-emoji" id="pet-emoji">🐣</div>
+                <h2 class="pet-name" id="pet-name-display">My Pet</h2>
+                <div class="stage-badge" id="stage-badge">Hatchling • Stage 0</div>
+                
+                <!-- Pet Speech Bubble -->
+                <div id="pet-speech-bubble" class="pet-speech-bubble hidden">
+                    <div class="speech-bubble-content">
+                        <div class="speech-bubble-text" id="pet-message">Hello! I'm your study companion!</div>
+                        <div class="speech-bubble-tail"></div>
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat">
+                        <div class="stat-value" id="points-display">0</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="studied-display">0s</div>
+                        <div class="stat-label">Studied</div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="openPanel('tasks')">📝 Tasks</button>
+                    <button class="btn btn-primary" onclick="openPanel('timer')">⏱️ Focus</button>
+                    <button class="btn btn-secondary" onclick="openPanel('quiz')">🧠 Quiz</button>
+                    <button class="btn btn-secondary" onclick="openPanel('insights')">💡 Insights</button>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span>Evolution Progress</span>
+                        <span id="progress-percentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timer Panel -->
+    <div id="timer-panel" class="panel">
+        <div class="panel-content">
+            <div class="panel-header">
+                <h2>Study Timer</h2>
+                <button class="btn btn-minimal" onclick="closePanel()">✕ Close</button>
+            </div>
+            <div class="timer-content">
+                <div class="timer-display" id="timer-display">25:00</div>
+                <div class="timer-label" id="timer-label">Custom Timer</div>
+                
+                <div class="timer-controls">
+                    <div class="time-inputs">
+                        <div class="time-input-group">
+                            <label for="timer-hours">Hours</label>
+                            <input type="number" id="timer-hours" min="0" max="23" value="0" class="time-input">
+                        </div>
+                        <div class="time-separator">:</div>
+                        <div class="time-input-group">
+                            <label for="timer-minutes">Minutes</label>
+                            <input type="number" id="timer-minutes" min="0" max="59" value="25" class="time-input">
+                        </div>
+                        <div class="time-separator">:</div>
+                        <div class="time-input-group">
+                            <label for="timer-seconds">Seconds</label>
+                            <input type="number" id="timer-seconds" min="0" max="59" value="0" class="time-input">
+                        </div>
+                    </div>
+                    
+                    <div class="pomodoro-control">
+                        <button class="btn btn-secondary" onclick="openPanel('pomodoro-settings')">🍅 Pomodoro Settings</button>
+                    </div>
+                    
+                    <button class="btn btn-success" id="timer-start-btn" onclick="startTimer()">Start Study Session</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks Panel -->
+    <div id="tasks-panel" class="panel">
+        <div class="panel-content">
+            <div class="panel-header">
+                <h2>Tasks & Goals</h2>
+                <button class="btn btn-minimal" onclick="closePanel()">✕ Close</button>
+            </div>
+            <div class="tasks-content">
+                <div class="add-task-form">
+                    <input type="text" id="task-title" placeholder="What do you want to study?" class="input-field">
+                    <div class="task-controls">
+                        <select id="task-difficulty" class="input-field">
+                            <option value="1">Easy (+10 points)</option>
+                            <option value="2">Medium (+25 points)</option>
+                            <option value="3">Hard (+50 points)</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="addTask()">Add Task</button>
+                    </div>
+                </div>
+                
+                <div class="tasks-list" id="tasks-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">📝</div>
+                        <p>No tasks yet. Add one above to get started!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Panel -->
+    <div id="quiz-panel" class="panel">
+        <div class="panel-content">
+            <div class="panel-header">
+                <h2>Study Quiz</h2>
+                <button class="btn btn-minimal" onclick="closePanel()">✕ Close</button>
+            </div>
+            <div class="quiz-content">
+                <div id="quiz-setup">
+                    <textarea id="quiz-prompt" placeholder="Describe what you want to study (e.g., 'math basics', 'world history', 'programming concepts')" class="input-field"></textarea>
+                    <button class="btn btn-primary" onclick="generateQuiz()">Generate Quiz</button>
+                </div>
+                
+                <div id="quiz-questions" class="hidden">
+                    <div class="quiz-header">
+                        <span id="question-counter">Question 1 of 3</span>
+                        <button class="btn btn-minimal" onclick="resetQuiz()">New Quiz</button>
+                    </div>
+                    
+                    <div class="quiz-progress">
+                        <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+                    </div>
+                    
+                    <div class="question-section">
+                        <h3 id="question-text">What is 2+2?</h3>
+                        <div class="answer-choices" id="answer-choices">
+                            <!-- Generated dynamically -->
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-info">
+                        +5 points for each correct answer
+                    </div>
+                </div>
+                
+                <div id="quiz-results" class="hidden">
+                    <div class="quiz-results-header">
+                        <h3>🎉 Quiz Complete!</h3>
+                        <div class="quiz-score">
+                            <div class="score-circle">
+                                <span id="quiz-score-percentage">0%</span>
+                            </div>
+                            <div class="score-details">
+                                <div class="score-text" id="quiz-score-text">0 out of 0 correct</div>
+                                <div class="score-points">+<span id="quiz-points-earned">0</span> points earned</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-feedback" id="quiz-feedback">
+                        <!-- Personalized feedback will be generated here -->
+                    </div>
+                    
+                    <div class="quiz-actions">
+                        <button class="btn btn-primary" onclick="resetQuiz()">Take Another Quiz</button>
+                        <button class="btn btn-secondary" onclick="openPanel('insights')">View Study Insights</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Study Insights Panel -->
+    <div id="insights-panel" class="panel">
+        <div class="panel-content">
+            <div class="panel-header">
+                <h2>Study Insights</h2>
+                <button class="btn btn-minimal" onclick="closePanel()">✕ Close</button>
+            </div>
+            <div class="insights-content">
+                <div id="insights-loading" class="hidden">
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>Analyzing your study patterns...</p>
+                    </div>
+                </div>
+                <div id="insights-main">
+                    <div class="insights-header">
+                        <h3>Your Pet's Study Wisdom</h3>
+                        <p class="insights-subtitle">Personalized insights based on your study habits</p>
+                    </div>
+                    <div id="insights-messages">
+                        <!-- Insights will be generated here -->
+                    </div>
+                    
+                    <div id="struggle-topics-section" class="struggle-topics-section">
+                        <h3>📚 Topics to Review</h3>
+                        <p class="section-description">Based on your quiz performance, here are topics that might need more attention:</p>
+                        <div id="struggle-topics-list">
+                            <!-- Struggle topics will be displayed here -->
+                        </div>
+                    </div>
+                    
+                    <div class="insights-actions">
+                        <button class="btn btn-primary" onclick="generateInsights()">Get New Insights</button>
+                        <button class="btn btn-secondary" onclick="showStudyStats()">View Study Stats</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pomodoro Settings Panel -->
+    <div id="pomodoro-settings-panel" class="panel">
+        <div class="panel-content">
+            <div class="panel-header">
+                <h2>🍅 Pomodoro Settings</h2>
+                <button class="btn btn-minimal" onclick="closePanel()">✕ Close</button>
+            </div>
+            <div class="pomodoro-settings-content">
+                <div class="settings-section">
+                    <h3>Study & Break Periods</h3>
+                    <p class="settings-description">Configure your Pomodoro study and break durations</p>
+                    
+                    <div class="time-settings">
+                        <div class="time-setting-group">
+                            <label for="study-minutes">Study Period (minutes):</label>
+                            <input type="number" id="study-minutes" min="1" max="60" value="25" class="input-field">
+                        </div>
+                        
+                        <div class="time-setting-group">
+                            <label for="break-minutes">Break Period (minutes):</label>
+                            <input type="number" id="break-minutes" min="1" max="30" value="5" class="input-field">
+                        </div>
+                        
+                        <div class="time-setting-group">
+                            <label for="long-break-minutes">Long Break (minutes):</label>
+                            <input type="number" id="long-break-minutes" min="5" max="60" value="15" class="input-field">
+                        </div>
+                        
+                        <div class="time-setting-group">
+                            <label for="sessions-before-long-break">Sessions before long break:</label>
+                            <input type="number" id="sessions-before-long-break" min="2" max="10" value="4" class="input-field">
+                        </div>
+                    </div>
+                    
+                    <div class="pomodoro-actions">
+                        <button class="btn btn-primary" onclick="savePomodoroSettings()">Save Settings</button>
+                        <button class="btn btn-secondary" onclick="startPomodoroSession()">Start Pomodoro</button>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Current Settings</h3>
+                    <div class="current-settings">
+                        <div class="setting-item">
+                            <span class="setting-label">Study Period:</span>
+                            <span class="setting-value" id="current-study">25 minutes</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Break Period:</span>
+                            <span class="setting-value" id="current-break">5 minutes</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Long Break:</span>
+                            <span class="setting-value" id="current-long-break">15 minutes</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Sessions before long break:</span>
+                            <span class="setting-value" id="current-sessions">4</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Persistent Timer Overlay -->
+    <div id="timer-overlay" class="timer-overlay hidden">
+        <div class="timer-overlay-content">
+            <div class="timer-overlay-body">
+                <div>
+                    <div class="timer-overlay-display" id="timer-overlay-display">25:00</div>
+                    <div class="timer-overlay-label">Study Session</div>
+                </div>
+                <div class="timer-overlay-buttons">
+                    <button class="btn btn-danger" onclick="stopTimer()">Stop</button>
+                    <button class="btn btn-secondary" onclick="openPanel('timer')">Open</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Topic Details Modal -->
+    <div id="topic-details-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-topic-title">Topic Performance Details</h3>
+                <button class="btn btn-minimal" onclick="closeTopicDetails()">✕ Close</button>
+            </div>
+            <div class="modal-body">
+                <div id="topic-performance-chart">
+                    <!-- Performance chart will be displayed here -->
+                </div>
+                <div id="topic-attempts-list">
+                    <!-- Individual attempts will be listed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
